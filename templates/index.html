@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Jua&family=Nanum+Brush+Script&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Nanum+Pen+Script&display=swap"
+          rel="stylesheet">
+
+    <title>Title</title>
+
+
+    <style>
+        * {
+            font-family: 'Gamja Flower', cursive;
+            background-color: RGBA(221, 237, 248, 1);
+        }
+
+        .banner {
+            width: 100%;
+            height: 200px;
+            font-family: 'Gamja Flower', cursive;
+
+            background-color: white;
+            background-position: center;
+            background-size: cover;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .banner > h1 {
+
+            font-weight: 800;
+            font-size: 5rem;
+            color: #429aff !important;
+            background-color: white;
+
+
+        }
+
+        .mybox {
+            width: 95%;
+            max-width: 800px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px gray;
+            margin: 20px auto;
+            background-color: white;
+
+
+        }
+
+        .mybucket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+
+
+        }
+
+        .mybox > li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+
+            margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .mybox > li > h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+            background-color: white;
+        }
+
+
+        .logoutbutton {
+            width: 100px;
+            position: absolute;
+            left: 1400px;
+            margin-bottom: 100px;
+            background-color: white;
+            color: #0f7fff;
+            border-color: RGBA(221, 237, 248, 1);
+
+        }
+
+        .formtag {
+            background-color: white;
+        }
+
+        .ptag {
+            background-color: white;
+        }
+
+        .form-control {
+            margin-right: 10px;
+        }
+
+        .mybox > li > h2.done {
+            text-decoration: line-through
+        }
+
+        #input_date {
+            padding-top: 4.8px;
+            padding-bottom: 4.8px;
+            margin-top: 15px;
+            margin-right: 10px;
+            background-color: white;
+            border-color: lightgray;
+
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_schedule();
+        });
+
+        {#function show_schedule() {#}
+        {#    $.ajax({#}
+        {#        type: "GET",#}
+        {#        url: "/schedule",#}
+        {#        data: {},#}
+        {#        success: function (response) {#}
+        {#            let rows = response['schedules']#}
+        {#            for (let i = 0; i < rows.length; i++) {#}
+        {#                let schedule = rows[i]['schedule']#}
+        {#                let num = rows[i]['num']#}
+        {#                let done = rows[i]['done']#}
+        {#                let date = rows[i]['date']#}
+        {##}
+        {##}
+        {#                let temp_heml = ``#}
+        {#                if (done == 0) {#}
+        {#                         temp_html = `<li>#}
+        {#                                    <h2 class="undo">✅ ${date}${schedule}</h2>#}
+        {#                                    <button onClick="done_schedule(${num})" type="button" class="btn btn-outline-primary">완료!#}
+        {#                                    </button>#}
+        {#                                    </li>`#}
+        {#                } else {#}
+        {#                    temp_html = `<li>#}
+        {#                                <h2 class="done">✅ ${date}${schedule}</h2>#}
+        {#                                <button onClick="undo_schedule(${num})" type="button" class="btn btn-outline-danger">취소!#}
+        {#                                </button>#}
+        {#                                </li>`#}
+        {#                 }#}
+        {##}
+        {#                $('#schedule-list').append(temp_html)#}
+        {##}
+        {#            }#}
+        {#        }#}
+        {#    });#}
+        {#}#}
+
+        function save_schedule() {
+            let schedule = $('#schedule').val()
+            let date = document.getElementById("input_date").value
+
+            $.ajax({
+                type: "POST",
+                url: "/schedule",
+                data: {schedule_give: schedule, date_give: date},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function done_schedule(num) {
+            $.ajax({
+                type: "POST",
+                url: "/schedule/done",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function undo_schedule(num) {
+            $.ajax({
+                type: "POST",
+                url: "/schedule/undo",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+        function sign_out() {
+                alert('로그아웃!')
+                window.location.href = "/login"
+            }
+
+        function input() {
+            let date = document.getElementById("input_date").value
+            $.ajax({
+                type: "POST",
+                url: "/schedule/date",
+                data: {date_give: date},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body>
+<div>
+
+    <div class="banner">
+
+        <h1>Schedule List</h1>
+        <button class="logoutbutton" type="button" onclick="sign_out()">로그아웃</button>
+    </div>
+    <div>
+        <div class="mybox">
+            <div class="mybucket">
+                <form class="formtag">
+                    <p class="ptag"><input id="input_date" type="date"></p>
+                </form>
+                <input id="schedule" class="form-control" type="text" placeholder="일정을 입력하세요">
+                <button onclick="save_schedule()" type="button" class="btn btn-outline-primary">save</button>
+            </div>
+        </div>
+    </div>
+    <div class="mybox" id="schedule-list">
+        {% for schedule in schedules %}
+            {% if schedule.done == 0 %}
+                <li>
+                    <h2>{{ schedule.date }}&nbsp;&nbsp;&nbsp;{{ schedule.schedule }}</h2>
+                    <button onclick="done_schedule({{ schedule.num }})" type="button" class="btn btn-outline-primary">
+                        완료
+                    </button>
+                </li>
+
+                {% else %}
+                <li>
+                    <h2 class="done">{{ schedule.date }}&nbsp;&nbsp;&nbsp;{{ schedule.schedule }}</h2>
+                    <button onclick="undo_schedule({{ schedule.num }})" type="button" class="btn btn-outline-danger">
+                        취소
+                    </button>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
